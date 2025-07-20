@@ -14,7 +14,7 @@ function seleccionarProvincia(provincia, escanos) {
 function calcularResultados() {
     const votosA = parseInt(document.getElementById('partidoA').value) || 0;
     const votosB = parseInt(document.getElementById('partidoB').value) || 0;
-    const votosC = parseInt(document.getElementById('partidoC').value) || 0;
+    const votosC = parseInt(    document.getElementById('partidoC').value) || 0;
     const votosD = parseInt(document.getElementById('partidoD').value) || 0;
     const votosE = parseInt(document.getElementById('partidoE').value) || 0;
     const votosF = parseInt(document.getElementById('partidoF').value) || 0;

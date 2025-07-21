@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ELECCIONES PROVINCIALES LEGISLATIVAS 2025 PBA</title>
   <style>
     body {
@@ -28,20 +29,18 @@
       justify-content: space-between;
       align-items: center;
     }
-
     #simuladores > section > p {
       margin: 10px 12px;
     }
 
+    /* ========== FILA DE PARTIDO ========== */
     .party {
       display: grid;
-      /* logo 80px / nombre 200px / slider 1fr / % 60px / bancas 100px */
       grid-template-columns: 80px 200px 1fr 60px 100px;
       column-gap: 12px;
       align-items: center;
       margin: 8px 12px;
     }
-
     .logo-cell {
       display: flex;
       justify-content: center;
@@ -51,7 +50,6 @@
       height: 60px;
       object-fit: cover;
     }
-
     .name-cell {
       display: flex;
       align-items: center;
@@ -59,7 +57,6 @@
     .name-cell strong {
       white-space: nowrap;
     }
-
     input[type=range] {
       width: 100%;
       height: 10px;
@@ -76,20 +73,18 @@
       background: #000;
       cursor: pointer;
     }
-
     .value {
       text-align: right;
     }
     .seat {
       font-weight: bold;
     }
-
-    input.LLA    { background: violet; }
+    input.LLA    { background: violet;     }
     input.FP     { background: lightblue; }
-    input.SBA    { background: orange; }
-    input.HECHOS { background: pink; }
-    input.FIT    { background: red; }
-    input.OTROS  { background: gray; }
+    input.SBA    { background: orange;    }
+    input.HECHOS { background: pink;      }
+    input.FIT    { background: red;       }
+    input.OTROS  { background: gray;      }
 
     /* ========== RESUMEN FINAL ========== */
     #resumenFinal {
@@ -106,7 +101,6 @@
     }
     .resumen-linea {
       display: grid;
-      /* logo 80px / info 1fr / diferencial 100px */
       grid-template-columns: 80px 1fr 100px;
       column-gap: 12px;
       align-items: center;
@@ -128,9 +122,59 @@
       text-align: center;
       font-weight: bold;
     }
-    /* Opcional: dar estilo distinto a la cabecera */
     .resumen-linea.header .diff-cell {
       text-decoration: underline;
+    }
+
+    /* ========== RESPONSIVE (MÓVIL) ========== */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      section h2 {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      section h2 span {
+        margin-top: 4px;
+      }
+      .party {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        margin: 12px;
+      }
+      .logo-cell, .name-cell, input[type=range], .value, .seat {
+        margin-bottom: 8px;
+      }
+      .logo-cell {
+        justify-content: flex-start;
+      }
+      .logo-cell img {
+        width: 50px;
+        height: 50px;
+      }
+      .name-cell strong {
+        font-size: 1em;
+      }
+      input[type=range] {
+        width: 100%;
+      }
+      .value, .seat {
+        text-align: left;
+      }
+      .resumen-linea {
+        grid-template-columns: 60px 1fr;
+        grid-template-rows: auto auto;
+      }
+      .resumen-linea .diff-cell {
+        grid-column: 1 / -1;
+        text-align: right;
+        margin-top: 4px;
+      }
+      #resumenFinal {
+        padding: 12px;
+      }
     }
   </style>
 </head>
@@ -146,282 +190,108 @@
 
   <script>
     const secciones = [
-  {
-    nombre: "1ra Sección - Senado",
-    bancas: 8,
-    padron: 4732831,
-    displayNames: {
-      LLA:   "D. Valenzuela",
-      FP:    "G. Katopodis",
-      SBA:   "J. Zamora",
-      FIT:   "R. Del Plá"
-    }
-  },
-  {
-    nombre: "4ta Sección - Senado",
-    bancas: 7,
-    padron: 540354,
-    displayNames: {
-      LLA:   "G. Cabezas",
-      FP:    "D. Videla",
-      SBA:   "P. Petrecca",
-      FIT:   "L. Roggero"
-    }
-  },
-  {
-    nombre: "5ta Sección - Senado",
-    bancas: 5,
-    padron: 1290948,
-    displayNames: {
-      LLA:   "G. Montenegro",
-      FP:    "F. Raverta",
-      SBA:   "M. Balsamello",
-      FIT:   "A. Martinez"
-    }
-  },
-  {
-    nombre: "7ma Sección - Senado",
-    bancas: 3,
-    padron: 281130,
-    displayNames: {
-      LLA:   "A. Speroni",
-      FP:    "M. Laurini",
-      SBA:   "F. Martini",
-      FIT:   "E. Marin"
-    }
-  },
-  {
-    nombre: "2da Sección - Diputados",
-    bancas: 11,
-    padron: 649465,
-    fuerzas: ["LLA", "FP", "HECHOS", "FIT", "OTROS"],
-    displayNames: {
-      LLA:    "N. Blanco",
-      FP:     "D. Nanni",
-      HECHOS: "M. Passaglia",
-      FIT:    "J. Nuñez"
-    }
-  },
-  {
-    nombre: "3ra Sección - Diputados",
-    bancas: 18,
-    padron: 4637863,
-    displayNames: {
-      LLA:   "M. Bondarenko",
-      FP:    "V. Magario",
-      SBA:   "P. Domenichini",
-      FIT:   "N. Del Caño"
-    }
-  },
-  {
-    nombre: "6ta Sección - Diputados",
-    bancas: 11,
-    padron: 652077,
-    displayNames: {
-      LLA:   "O. Liberman",
-      FP:    "A. Diachiara",
-      SBA:   "A. De Leo",
-      FIT:   "H. Zaris"
-    }
-  },
-  {
-    nombre: "8va Sección - Diputados",
-    bancas: 6,
-    padron: 576691,
-    displayNames: {
-      LLA:   "J. Osaba",
-      FP:    "A. Archanco",
-      SBA:   "P. Nicoletti",
-      FIT:   "L. Cano"
-    }
-  }
-];
+      { nombre: "1ra Sección - Senado", bancas: 8, padron: 4732831, displayNames: { LLA:"D. Valenzuela", FP:"G. Katopodis", SBA:"J. Zamora", FIT:"R. Del Plá" } },
+      { nombre: "4ta Sección - Senado", bancas: 7, padron: 540354, displayNames: { LLA:"G. Cabezas", FP:"D. Videla", SBA:"P. Petrecca", FIT:"L. Roggero" } },
+      { nombre: "5ta Sección - Senado", bancas: 5, padron: 1290948, displayNames: { LLA:"G. Montenegro", FP:"F. Raverta", SBA:"M. Balsamello", FIT:"A. Martinez" } },
+      { nombre: "7ma Sección - Senado", bancas: 3, padron: 281130, displayNames: { LLA:"A. Speroni", FP:"M. Laurini", SBA:"F. Martini", FIT:"E. Marin" } },
+      { nombre: "2da Sección - Diputados", bancas: 11, padron: 649465, fuerzas:["LLA","FP","HECHOS","FIT","OTROS"], displayNames:{LLA:"N. Blanco",FP:"D. Nanni",HECHOS:"M. Passaglia",FIT:"J. Nuñez"} },
+      { nombre: "3ra Sección - Diputados", bancas: 18, padron: 4637863, displayNames: { LLA:"M. Bondarenko", FP:"V. Magario", SBA:"P. Domenichini", FIT:"N. Del Caño" } },
+      { nombre: "6ta Sección - Diputados", bancas: 11, padron: 652077, displayNames: { LLA:"O. Liberman", FP:"A. Diachiara", SBA:"A. De Leo", FIT:"H. Zaris" } },
+      { nombre: "8va Sección - Diputados", bancas: 6, padron: 576691, displayNames: { LLA:"J. Osaba", FP:"A. Archanco", SBA:"P. Nicoletti", FIT:"L. Cano" } }
+    ];
 
+    const defaultFuerzas = ["LLA","FP","SBA","FIT","OTROS"];
+    const colores = { LLA:"violet", FP:"lightblue", SBA:"orange", HECHOS:"pink", FIT:"red", OTROS:"gray" };
+    const logos = { LLA:"img/lla.png", FP:"img/fp.png", SBA:"img/somosba.png", HECHOS:"img/hechos_nuevo.png", FIT:"img/fit.png", OTROS:"" };
+    const renewals = { FP:29, SBA:19, LLA:18, FIT:2, OTROS:1, HECHOS:0 };
 
-    const defaultFuerzas = ["LLA", "FP", "SBA", "FIT", "OTROS"];
-    const colores = {
-      "LLA": "violet",
-      "FP": "lightblue",
-      "SBA": "orange",
-      "HECHOS": "pink",
-      "FIT": "red",
-      "OTROS": "gray"
-    };
-    const logos = {
-      "LLA": "img/lla.png",
-      "FP": "img/fp.png",
-      "SBA": "img/somosba.png",
-      "HECHOS": "img/hechos_nuevo.png",
-      "FIT": "img/fit.png",
-      "OTROS": ""
-    };
-
-    // Bancas a renovar por fuerza:
-    const renewals = {
-      FP: 29,
-      SBA: 19,
-      LLA: 18,
-      FIT: 2,
-      OTROS: 1,
-      HECHOS: 0
-    };
-
-    function crearSimulador(seccion, index) {
-      const container = document.createElement("section");
-      const fuerzas = seccion.fuerzas || defaultFuerzas;
-      container.innerHTML = `
-        <h2>${seccion.nombre} <span>${seccion.bancas} bancas</span></h2>
-        <p>Total porcentajes: <span id="total_${index}">0%</span></p>
-        <div id="sliders_${index}"></div>
-      `;
-      document.getElementById("simuladores").appendChild(container);
-
-      fuerzas.forEach(f => {
-        const div = document.createElement("div");
-        div.className = "party";
-
-        const logoHTML = logos[f]
-          ? `<img src="${logos[f]}" alt="${f}">`
-          : `<div style="width:60px; height:60px;"></div>`;
-
-        const labelText = (seccion.displayNames && seccion.displayNames[f]) || f;
-
-        div.innerHTML = `
-          <div class="logo-cell">${logoHTML}</div>
-          <div class="name-cell"><strong>${labelText}</strong></div>
-          <input type="range" min="0" max="100" value="0"
-                 class="${f}" id="${f}_slider_${index}"
-                 oninput="updateAll(${index})">
-          <span class="value" id="${f}_val_${index}">0%</span>
-          <span class="seat" id="${f}_seats_${index}">0 bancas</span>
-        `;
-        document.getElementById(`sliders_${index}`).appendChild(div);
+    function crearSimulador(sec, i) {
+      const c = document.createElement("section");
+      const fs = sec.fuerzas||defaultFuerzas;
+      c.innerHTML = `
+        <h2>${sec.nombre} <span>${sec.bancas} bancas</span></h2>
+        <p>Total porcentajes: <span id="total_${i}">0%</span></p>
+        <div id="sliders_${i}"></div>`;
+      document.getElementById("simuladores").appendChild(c);
+      fs.forEach(f=>{
+        const d=document.createElement("div"); d.className="party";
+        const logo=logos[f]?`<img src="${logos[f]}" alt="">`:`<div style="width:60px; height:60px;"></div>`;
+        const lbl=(sec.displayNames&&sec.displayNames[f])||f;
+        d.innerHTML=`
+          <div class="logo-cell">${logo}</div>
+          <div class="name-cell"><strong>${lbl}</strong></div>
+          <input type="range" min="0" max="100" value="0" class="${f}" id="${f}_slider_${i}" oninput="updateAll(${i})">
+          <span class="value" id="${f}_val_${i}">0%</span>
+          <span class="seat" id="${f}_seats_${i}">0 bancas</span>`;
+        document.getElementById(`sliders_${i}`).appendChild(d);
       });
     }
 
-    function updateAll(index) {
-      const seccion = secciones[index];
-      const fuerzas = seccion.fuerzas || defaultFuerzas;
-      const totalSeats = seccion.bancas;
-      const cutoff = 100 / totalSeats;
-
-      let total = 0;
-      const data = [];
-
-      fuerzas.forEach(f => {
-        const val = parseFloat(document.getElementById(`${f}_slider_${index}`).value);
-        total += val;
-        document.getElementById(`${f}_val_${index}`).textContent = val.toFixed(1) + '%';
-        data.push({ name: f, percent: val, votes: val >= cutoff ? val : 0 });
+    function updateAll(i) {
+      const sec=secciones[i], fs=sec.fuerzas||defaultFuerzas, ts=sec.bancas, cutoff=100/ts;
+      let tot=0, data=[];
+      fs.forEach(f=>{
+        const v=parseFloat(document.getElementById(`${f}_slider_${i}`).value);
+        tot+=v; document.getElementById(`${f}_val_${i}`).textContent=v.toFixed(1)+"%";
+        data.push({name:f,percent:v,votes:v>=cutoff?v:0});
       });
-
-      document.getElementById(`total_${index}`).textContent = total.toFixed(1) + '%';
-
-      if (total !== 100) {
-        fuerzas.forEach(f => {
-          document.getElementById(`${f}_seats_${index}`).textContent = '—';
-        });
-        return;
-      }
-
-      const totalVotes = data.reduce((acc, p) => acc + p.votes, 0);
-      const quota = totalVotes / totalSeats;
-
-      const assigned = {};
-      const remainders = [];
-      fuerzas.forEach(f => assigned[f] = 0);
-
-      data.forEach(p => {
-        if (p.votes > 0) {
-          const raw = p.votes / quota;
-          const whole = Math.floor(raw);
-          const rem = raw - whole;
-          assigned[p.name] = whole;
-          remainders.push({ name: p.name, remainder: rem });
-        }
-      });
-
-      let used = Object.values(assigned).reduce((a, b) => a + b, 0);
-      const remaining = totalSeats - used;
-      remainders
-        .sort((a, b) => b.remainder - a.remainder)
-        .slice(0, remaining)
-        .forEach(r => assigned[r.name]++);
-
-      fuerzas.forEach(f => {
-        document.getElementById(`${f}_seats_${index}`).textContent = `${assigned[f]} bancas`;
-      });
-
+      document.getElementById(`total_${i}`).textContent=tot.toFixed(1)+"%";
+      if(tot!==100){ fs.forEach(f=>document.getElementById(`${f}_seats_${i}`).textContent="—"); return; }
+      const totalV=data.reduce((a,p)=>a+p.votes,0), q=totalV/ts;
+      let assigned={}, rem=[];
+      fs.forEach(f=>assigned[f]=0);
+      data.forEach(p=>{ if(p.votes>0){ let raw=p.votes/q, w=Math.floor(raw); assigned[p.name]=w; rem.push({name:p.name,remainder:raw-w}); } });
+      let used=Object.values(assigned).reduce((a,b)=>a+b,0), left=ts-used;
+      rem.sort((a,b)=>b.remainder-a.remainder).slice(0,left).forEach(r=>assigned[r.name]++);
+      fs.forEach(f=>document.getElementById(`${f}_seats_${i}`).textContent=`${assigned[f]} bancas`);
       calcularTotalesGlobales();
     }
 
     function calcularTotalesGlobales() {
-      const totalVotos = {};
-      const totalBancas = {};
-      secciones.forEach((sec, idx) => {
-        const fuerzas = sec.fuerzas || defaultFuerzas;
-        fuerzas.forEach(f => {
-          const val = parseFloat(document.getElementById(`${f}_slider_${idx}`).value);
-          const votos = sec.padron * val / 100;
-          const bancas = parseInt(document.getElementById(`${f}_seats_${idx}`).textContent) || 0;
-          totalVotos[f] = (totalVotos[f] || 0) + votos;
-          totalBancas[f] = (totalBancas[f] || 0) + bancas;
+      let tv={}, tb={};
+      secciones.forEach((sec,i)=>{
+        const fs=sec.fuerzas||defaultFuerzas;
+        fs.forEach(f=>{
+          const v=parseFloat(document.getElementById(`${f}_slider_${i}`).value),
+                votos=sec.padron*v/100,
+                bancas=parseInt(document.getElementById(`${f}_seats_${i}`).textContent)||0;
+          tv[f]=(tv[f]||0)+votos; tb[f]=(tb[f]||0)+bancas;
         });
       });
-      renderResumen(totalVotos, totalBancas);
+      renderResumen(tv,tb);
     }
 
-    function renderResumen(votosTotales, bancasTotales) {
-      const totalPadron = secciones.reduce((acc, s) => acc + s.padron, 0);
-      const contenedor = document.getElementById("tablaResumen");
+    function renderResumen(tv,tb) {
+      const totalPad=secciones.reduce((a,s)=>a+s.padron,0),
+            cont=document.getElementById("tablaResumen");
+      let res=Object.keys(tv).map(f=>({
+        fuerza:f, votos:tv[f],
+        porcentaje:tv[f]*100/totalPad,
+        bancas:tb[f]||0
+      })).sort((a,b)=>b.votos-a.votos);
 
-      const resultados = Object.keys(votosTotales).map(f => ({
-        fuerza: f,
-        votos: votosTotales[f],
-        porcentaje: votosTotales[f] * 100 / totalPadron,
-        bancas: bancasTotales[f] || 0
-      }))
-      .sort((a, b) => b.votos - a.votos);
-
-      // Cabecera con título de columna "Diferencial"
-      contenedor.innerHTML = `
+      cont.innerHTML=`
         <div class="resumen-linea header">
           <div class="logo-cell"></div>
           <div class="info-cell"></div>
           <div class="diff-cell"><strong>Diferencial</strong></div>
-        </div>
-      `;
+        </div>`;
 
-      // Cada fuerza
-      resultados.forEach(r => {
-        const votosFormateados = Math.round(r.votos).toLocaleString("es-AR");
-        const logoHTML = logos[r.fuerza]
-          ? `<img src="${logos[r.fuerza]}" alt="${r.fuerza}">`
-          : `<div style="width:60px; height:60px;"></div>`;
-
-        // Calcula diferencial
-        const renov = renewals[r.fuerza] || 0;
-        const diff = r.bancas - renov;
-        let diffText;
-        if (diff > 0)      diffText = `+${diff} ↑`;
-        else if (diff < 0) diffText = `${diff} ↓`;
-        else               diffText = `0 ↔`;
-
-        contenedor.innerHTML += `
+      res.forEach(r=>{
+        const vf=Math.round(r.votos).toLocaleString("es-AR"),
+              logo=logos[r.fuerza]?`<img src="${logos[r.fuerza]}" alt="">`:`<div style="width:60px;height:60px;"></div>`,
+              ren=renewals[r.fuerza]||0,
+              d=r.bancas-ren, dt=d>0?`+${d} ↑`:d<0?`${d} ↓`:`0 ↔`;
+        cont.innerHTML+=`
           <div class="resumen-linea">
-            <div class="logo-cell">${logoHTML}</div>
-            <div class="info-cell">
-              <strong>${r.fuerza}</strong>:
-              ${r.porcentaje.toFixed(2)}% (${votosFormateados} votos)
-              – ${r.bancas} legisladores
-            </div>
-            <div class="diff-cell">${diffText}</div>
-          </div>
-        `;
+            <div class="logo-cell">${logo}</div>
+            <div class="info-cell"><strong>${r.fuerza}</strong>: ${r.porcentaje.toFixed(2)}% (${vf} votos) – ${r.bancas} legisladores</div>
+            <div class="diff-cell">${dt}</div>
+          </div>`;
       });
     }
 
-    secciones.forEach((sec, idx) => crearSimulador(sec, idx));
+    secciones.forEach((s,i)=>crearSimulador(s,i));
   </script>
 </body>
 </html>

@@ -261,35 +261,63 @@
       renderResumen(tv,tb);
     }
 
-    function renderResumen(tv,tb) {
-      const totalPad=secciones.reduce((a,s)=>a+s.padron,0),
-            cont=document.getElementById("tablaResumen");
-      let res=Object.keys(tv).map(f=>({
-        fuerza:f, votos:tv[f],
-        porcentaje:tv[f]*100/totalPad,
-        bancas:tb[f]||0
-      })).sort((a,b)=>b.votos-a.votos);
+  function renderResumen(votosTotales, bancasTotales) {
+  const totalPadron = secciones.reduce((acc, s) => acc + s.padron, 0);
+  const contenedor = document.getElementById("tablaResumen");
 
-      cont.innerHTML=`
-        <div class="resumen-linea header">
-          <div class="logo-cell"></div>
-          <div class="info-cell"></div>
-          <div class="diff-cell"><strong>Diferencial</strong></div>
-        </div>`;
+  const resultados = Object.keys(votosTotales).map(f => ({
+    fuerza: f,
+    votos: votosTotales[f],
+    porcentaje: votosTotales[f] * 100 / totalPadron,
+    bancas: bancasTotales[f] || 0
+  }))
+  .sort((a, b) => b.votos - a.votos);
 
-      res.forEach(r=>{
-        const vf=Math.round(r.votos).toLocaleString("es-AR"),
-              logo=logos[r.fuerza]?`<img src="${logos[r.fuerza]}" alt="">`:`<div style="width:60px;height:60px;"></div>`,
-              ren=renewals[r.fuerza]||0,
-              d=r.bancas-ren, dt=d>0?`+${d} ↑`:d<0?`${d} ↓`:`0 ↔`;
-        cont.innerHTML+=`
-          <div class="resumen-linea">
-            <div class="logo-cell">${logo}</div>
-            <div class="info-cell"><strong>${r.fuerza}</strong>: ${r.porcentaje.toFixed(2)}% (${vf} votos) – ${r.bancas} legisladores</div>
-            <div class="diff-cell">${dt}</div>
-          </div>`;
-      });
+  // Cabecera actualizada
+  contenedor.innerHTML = `
+    <div class="resumen-linea header">
+      <div class="logo-cell"></div>
+      <div class="info-cell"></div>
+      <div class="diff-cell"><strong>Diferencial de Legisladores</strong></div>
+    </div>
+  `;
+
+  resultados.forEach(r => {
+    const votosFormateados = Math.round(r.votos).toLocaleString("es-AR");
+    const logoHTML = logos[r.fuerza]
+      ? `<img src="${logos[r.fuerza]}" alt="${r.fuerza}">`
+      : `<div style="width:60px; height:60px;"></div>`;
+
+    // Cálculo de diferencial
+    const renov = renewals[r.fuerza] || 0;
+    const diff = r.bancas - renov;
+    let diffText;
+    if (diff > 0) {
+      // ▲ verde para positivo
+      diffText = `<span style="color:green">▲</span> +${diff}`;
+    } else if (diff < 0) {
+      // ▼ rojo para negativo
+      diffText = `<span style="color:red">▼</span> ${diff}`;
+    } else {
+      // ■ amarillo para neutro
+      diffText = `<span style="color:gold">■</span> 0`;
     }
+
+    contenedor.innerHTML += `
+      <div class="resumen-linea">
+        <div class="logo-cell">${logoHTML}</div>
+        <div class="info-cell">
+          <strong>${r.fuerza}</strong>:
+          ${r.porcentaje.toFixed(2)}% (${votosFormateados} votos)
+          – ${r.bancas} legisladores
+        </div>
+        <div class="diff-cell">${diffText}</div>
+      </div>
+    `;
+  });
+}
+
+
 
     secciones.forEach((s,i)=>crearSimulador(s,i));
   </script>

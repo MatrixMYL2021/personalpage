@@ -4,34 +4,94 @@
   <meta charset="UTF-8">
   <title>ELECCIONES PROVINCIALES LEGISLATIVAS 2025 PBA</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: auto; }
-    .party { margin: 10px 0; display: flex; align-items: center; }
-    .label { display: inline-block; width: 150px; display: flex; align-items: center; }
-    .label img { width: 60px; height: 60px; margin-right: 8px; object-fit: cover; border-radius: 0; }
-    .value { width: 50px; display: inline-block; text-align: right; }
-    .seat { font-weight: bold; margin-left: 10px; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    /* ========== SECCIÓN ========== */
+    section {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    section h2 {
+      margin: 0;
+      padding: 8px 12px;
+      background: #f0f0f0;
+      border-bottom: 1px solid #ccc;
+      font-size: 1.1em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #simuladores > section > p {
+      margin: 10px 12px;
+    }
+
+    .party {
+      display: grid;
+      /* logo 80px / nombre 200px / slider 1fr / % 60px / bancas 100px */
+      grid-template-columns: 80px 200px 1fr 60px 100px;
+      column-gap: 12px;
+      align-items: center;
+      margin: 8px 12px;
+    }
+
+    .logo-cell {
+      display: flex;
+      justify-content: center;
+    }
+    .logo-cell img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+    }
+
+    .name-cell {
+      display: flex;
+      align-items: center;
+    }
+    .name-cell strong {
+      white-space: nowrap;
+    }
+
     input[type=range] {
-      width: 300px; height: 10px; border-radius: 5px; outline: none; background: #ccc;
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      outline: none;
+      background: #ccc;
       appearance: none;
     }
     input[type=range]::-webkit-slider-thumb {
-      appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #000; cursor: pointer;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #000;
+      cursor: pointer;
     }
-    section {
-      border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 8px; width: 100%; box-sizing: border-box;
-    }
-    h2 {
-      background-color: #f0f0f0; padding: 10px; border-radius: 6px; font-size: 1.1em; display: flex; justify-content: space-between; align-items: center;
-    }
-    .grid { display: block; }
-    input.LLA { background: violet; }
-    input.FP { background: lightblue; }
-    input.SBA { background: orange; }
-    input.HECHOS { background: pink; }
-    input.FIT { background: red; }
-    input.OTROS { background: gray; }
 
-    /* Nuevo estilo para el cuadro final */
+    .value {
+      text-align: right;
+    }
+    .seat {
+      font-weight: bold;
+    }
+
+    input.LLA    { background: violet; }
+    input.FP     { background: lightblue; }
+    input.SBA    { background: orange; }
+    input.HECHOS { background: pink; }
+    input.FIT    { background: red; }
+    input.OTROS  { background: gray; }
+
+    /* ========== RESUMEN FINAL ========== */
     #resumenFinal {
       margin-top: 40px;
       padding: 20px;
@@ -39,14 +99,45 @@
       border-radius: 8px;
       background-color: #f9f9f9;
     }
-    .resumen-linea { display: flex; align-items: center; margin: 8px 0; }
-    .resumen-linea img { width: 60px; height: 60px; margin-right: 10px; object-fit: cover; }
+    #tablaResumen {
+      display: grid;
+      row-gap: 12px;
+      padding: 12px;
+    }
+    .resumen-linea {
+      display: grid;
+      /* logo 80px / info 1fr / diferencial 100px */
+      grid-template-columns: 80px 1fr 100px;
+      column-gap: 12px;
+      align-items: center;
+    }
+    .resumen-linea .logo-cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .resumen-linea .logo-cell img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+    }
+    .resumen-linea .info-cell {
+      font-size: 0.95em;
+    }
+    .resumen-linea .diff-cell {
+      text-align: center;
+      font-weight: bold;
+    }
+    /* Opcional: dar estilo distinto a la cabecera */
+    .resumen-linea.header .diff-cell {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <h1>ELECCIONES PROVINCIALES LEGISLATIVAS 2025 PBA</h1>
 
-  <div class="grid" id="simuladores"></div>
+  <div id="simuladores"></div>
 
   <div id="resumenFinal">
     <h2>Resultado Final Provincial</h2>
@@ -55,46 +146,152 @@
 
   <script>
     const secciones = [
-      { nombre: "1ra Sección - Senado", bancas: 8, padron: 4732831 },
-      { nombre: "4ta Sección - Senado", bancas: 7, padron: 540354 },
-      { nombre: "5ta Sección - Senado", bancas: 5, padron: 1290948 },
-      { nombre: "7ma Sección - Senado", bancas: 3, padron: 281130 },
-      { 
-        nombre: "2da Sección - Diputados", 
-        bancas: 11, 
-        padron: 649465,
-        fuerzas: ["LLA", "FP", "HECHOS", "FIT", "OTROS"] 
-      },
-      { nombre: "3ra Sección - Diputados", bancas: 18, padron: 4637863 },
-      { nombre: "6ta Sección - Diputados", bancas: 11, padron: 652077 },
-      { nombre: "8va Sección - Diputados", bancas: 6, padron: 576691 }
-    ];
+  {
+    nombre: "1ra Sección - Senado",
+    bancas: 8,
+    padron: 4732831,
+    displayNames: {
+      LLA:   "D. Valenzuela",
+      FP:    "G. Katopodis",
+      SBA:   "J. Zamora",
+      FIT:   "R. Del Plá"
+    }
+  },
+  {
+    nombre: "4ta Sección - Senado",
+    bancas: 7,
+    padron: 540354,
+    displayNames: {
+      LLA:   "G. Cabezas",
+      FP:    "D. Videla",
+      SBA:   "P. Petrecca",
+      FIT:   "L. Roggero"
+    }
+  },
+  {
+    nombre: "5ta Sección - Senado",
+    bancas: 5,
+    padron: 1290948,
+    displayNames: {
+      LLA:   "G. Montenegro",
+      FP:    "F. Raverta",
+      SBA:   "M. Balsamello",
+      FIT:   "A. Martinez"
+    }
+  },
+  {
+    nombre: "7ma Sección - Senado",
+    bancas: 3,
+    padron: 281130,
+    displayNames: {
+      LLA:   "A. Speroni",
+      FP:    "M. Laurini",
+      SBA:   "F. Martini",
+      FIT:   "E. Marin"
+    }
+  },
+  {
+    nombre: "2da Sección - Diputados",
+    bancas: 11,
+    padron: 649465,
+    fuerzas: ["LLA", "FP", "HECHOS", "FIT", "OTROS"],
+    displayNames: {
+      LLA:    "N. Blanco",
+      FP:     "D. Nanni",
+      HECHOS: "M. Passaglia",
+      FIT:    "J. Nuñez"
+    }
+  },
+  {
+    nombre: "3ra Sección - Diputados",
+    bancas: 18,
+    padron: 4637863,
+    displayNames: {
+      LLA:   "M. Bondarenko",
+      FP:    "V. Magario",
+      SBA:   "P. Domenichini",
+      FIT:   "N. Del Caño"
+    }
+  },
+  {
+    nombre: "6ta Sección - Diputados",
+    bancas: 11,
+    padron: 652077,
+    displayNames: {
+      LLA:   "O. Liberman",
+      FP:    "A. Diachiara",
+      SBA:   "A. De Leo",
+      FIT:   "H. Zaris"
+    }
+  },
+  {
+    nombre: "8va Sección - Diputados",
+    bancas: 6,
+    padron: 576691,
+    displayNames: {
+      LLA:   "J. Osaba",
+      FP:    "A. Archanco",
+      SBA:   "P. Nicoletti",
+      FIT:   "L. Cano"
+    }
+  }
+];
+
 
     const defaultFuerzas = ["LLA", "FP", "SBA", "FIT", "OTROS"];
-    const colores = { "LLA": "violet", "FP": "lightblue", "SBA": "orange", "HECHOS": "pink", "FIT": "red", "OTROS": "gray" };
+    const colores = {
+      "LLA": "violet",
+      "FP": "lightblue",
+      "SBA": "orange",
+      "HECHOS": "pink",
+      "FIT": "red",
+      "OTROS": "gray"
+    };
     const logos = {
       "LLA": "img/lla.png",
       "FP": "img/fp.png",
       "SBA": "img/somosba.png",
       "HECHOS": "img/hechos_nuevo.png",
-      "FIT": "img/fit.png"
+      "FIT": "img/fit.png",
+      "OTROS": ""
+    };
+
+    // Bancas a renovar por fuerza:
+    const renewals = {
+      FP: 29,
+      SBA: 19,
+      LLA: 18,
+      FIT: 2,
+      OTROS: 1,
+      HECHOS: 0
     };
 
     function crearSimulador(seccion, index) {
       const container = document.createElement("section");
       const fuerzas = seccion.fuerzas || defaultFuerzas;
-      container.innerHTML = `<h2>${seccion.nombre} <span>${seccion.bancas} bancas</span></h2>
+      container.innerHTML = `
+        <h2>${seccion.nombre} <span>${seccion.bancas} bancas</span></h2>
         <p>Total porcentajes: <span id="total_${index}">0%</span></p>
-        <div id="sliders_${index}"></div>`;
+        <div id="sliders_${index}"></div>
+      `;
       document.getElementById("simuladores").appendChild(container);
 
       fuerzas.forEach(f => {
         const div = document.createElement("div");
         div.className = "party";
-        const logo = logos[f] ? `<img src="${logos[f]}" alt="${f}">` : `<div style="width:60px;height:60px;"></div>`;
+
+        const logoHTML = logos[f]
+          ? `<img src="${logos[f]}" alt="${f}">`
+          : `<div style="width:60px; height:60px;"></div>`;
+
+        const labelText = (seccion.displayNames && seccion.displayNames[f]) || f;
+
         div.innerHTML = `
-          <span class="label">${logo}${f}</span>
-          <input type="range" min="0" max="100" value="0" class="${f}" style="background:${colores[f] || '#ccc'}" id="${f}_slider_${index}" oninput="updateAll(${index})">
+          <div class="logo-cell">${logoHTML}</div>
+          <div class="name-cell"><strong>${labelText}</strong></div>
+          <input type="range" min="0" max="100" value="0"
+                 class="${f}" id="${f}_slider_${index}"
+                 oninput="updateAll(${index})">
           <span class="value" id="${f}_val_${index}">0%</span>
           <span class="seat" id="${f}_seats_${index}">0 bancas</span>
         `;
@@ -127,7 +324,7 @@
         return;
       }
 
-      let totalVotes = data.reduce((acc, p) => acc + p.votes, 0);
+      const totalVotes = data.reduce((acc, p) => acc + p.votes, 0);
       const quota = totalVotes / totalSeats;
 
       const assigned = {};
@@ -146,10 +343,10 @@
 
       let used = Object.values(assigned).reduce((a, b) => a + b, 0);
       const remaining = totalSeats - used;
-      remainders.sort((a, b) => b.remainder - a.remainder);
-      for (let i = 0; i < remaining; i++) {
-        assigned[remainders[i].name]++;
-      }
+      remainders
+        .sort((a, b) => b.remainder - a.remainder)
+        .slice(0, remaining)
+        .forEach(r => assigned[r.name]++);
 
       fuerzas.forEach(f => {
         document.getElementById(`${f}_seats_${index}`).textContent = `${assigned[f]} bancas`;
@@ -181,25 +378,44 @@
       const resultados = Object.keys(votosTotales).map(f => ({
         fuerza: f,
         votos: votosTotales[f],
-        porcentaje: (votosTotales[f] * 100 / totalPadron),
+        porcentaje: votosTotales[f] * 100 / totalPadron,
         bancas: bancasTotales[f] || 0
-      }));
+      }))
+      .sort((a, b) => b.votos - a.votos);
 
-      resultados.sort((a, b) => b.votos - a.votos);
+      // Cabecera con título de columna "Diferencial"
+      contenedor.innerHTML = `
+        <div class="resumen-linea header">
+          <div class="logo-cell"></div>
+          <div class="info-cell"></div>
+          <div class="diff-cell"><strong>Diferencial</strong></div>
+        </div>
+      `;
 
-      contenedor.innerHTML = "";
+      // Cada fuerza
       resultados.forEach(r => {
         const votosFormateados = Math.round(r.votos).toLocaleString("es-AR");
-        const logo = logos[r.fuerza]
+        const logoHTML = logos[r.fuerza]
           ? `<img src="${logos[r.fuerza]}" alt="${r.fuerza}">`
           : `<div style="width:60px; height:60px;"></div>`;
 
+        // Calcula diferencial
+        const renov = renewals[r.fuerza] || 0;
+        const diff = r.bancas - renov;
+        let diffText;
+        if (diff > 0)      diffText = `+${diff} ↑`;
+        else if (diff < 0) diffText = `${diff} ↓`;
+        else               diffText = `0 ↔`;
+
         contenedor.innerHTML += `
           <div class="resumen-linea">
-            ${logo}
-            <strong>${r.fuerza}</strong>:
-            ${r.porcentaje.toFixed(2)}% (${votosFormateados} votos)
-            – ${r.bancas} legisladores
+            <div class="logo-cell">${logoHTML}</div>
+            <div class="info-cell">
+              <strong>${r.fuerza}</strong>:
+              ${r.porcentaje.toFixed(2)}% (${votosFormateados} votos)
+              – ${r.bancas} legisladores
+            </div>
+            <div class="diff-cell">${diffText}</div>
           </div>
         `;
       });
